@@ -22,6 +22,135 @@
   --md-typeset-h3-color: #d9dee3;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+.md-main {
+  animation: fadeSlideIn 0.4s ease-out;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.md-nav__link {
+  transition: color 0.2s ease, transform 0.15s ease;
+}
+
+.md-nav__link:hover {
+  transform: translateX(2px);
+}
+
+.md-nav__item--nested .md-nav__link {
+  transition: color 0.2s ease;
+  position: relative;
+}
+
+.md-nav__item--nested .md-nav__link::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  width: 3px;
+  height: 0;
+  background: #60a5fa;
+  border-radius: 2px;
+  transform: translateY(-50%);
+  transition: height 0.2s ease;
+}
+
+.md-nav__item--nested .md-nav__link--active::before {
+  height: 60%;
+}
+
+.md-typeset a {
+  text-decoration: none;
+  position: relative;
+  transition: color 0.15s ease;
+}
+
+.md-typeset a::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #60a5fa;
+  transition: width 0.2s ease;
+}
+
+.md-typeset a:hover::after {
+  width: 100%;
+}
+
+.md-typeset h1 {
+  font-weight: 700;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  animation: titleGlow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+  from {
+    text-shadow: 0 0 0 transparent;
+  }
+  to {
+    text-shadow: 0 0 40px rgba(96, 165, 250, 0.08);
+  }
+}
+
+.md-typeset h2 {
+  animation: slideIn 0.3s ease-out both;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.md-typeset pre {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.md-typeset pre:hover {
+  border-color: #60a5fa;
+  box-shadow: 0 0 24px rgba(96, 165, 250, 0.06);
+}
+
+.md-typeset code:not(pre code) {
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.md-typeset code:not(pre code):hover {
+  background-color: #1c2333;
+  border-color: #60a5fa;
+}
+
+.md-header {
+  background-color: #161b22;
+  border-bottom: 1px solid #30363d;
+  transition: box-shadow 0.2s ease;
+}
+
+.md-header[data-md-state="shadow"] {
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+}
+
 .md-header {
   background-color: #161b22;
   border-bottom: 1px solid #30363d;
