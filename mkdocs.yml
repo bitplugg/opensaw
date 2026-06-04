@@ -8,38 +8,56 @@ theme:
   name: material
   language: ru
   palette:
-    - scheme: slate
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/weather-night
-        name: Светлая тема
-    - scheme: default
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/weather-sunny
-        name: Тёмная тема
+    scheme: slate
+    primary: custom
+    accent: custom
   features:
     - navigation.instant
     - navigation.tracking
-    - navigation.expand
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - toc.follow
     - search.highlight
+    - search.suggest
     - content.code.copy
     - content.code.annotate
+    - content.tabs.link
+  font:
+    text: Inter
+    code: JetBrains Mono
+  logo: assets/logo.svg
+  favicon: assets/logo.svg
+
+extra_css:
+  - assets/stylesheets/extra.css
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/bitplugg/opensaw
+  generator: false
+
+copyright: Copyright &copy; 2026 OpenSaw Team
 
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
+      use_pygments: true
   - pymdownx.superfences
   - pymdownx.inlinehilite
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.emoji
   - pymdownx.details
+  - pymdownx.keys
   - admonition
   - toc:
       permalink: true
+      title: На этой странице
+  - attr_list
+  - md_in_html
+  - def_list
 
 nav:
   - Главная: index.md
@@ -55,7 +73,7 @@ nav:
     - Система плагинов: plugins.md
     - OpenSawCore SDK: opensawcore.md
     - Написание плагина: writing-plugins.md
-    - Примеры: plugin-examples.md
+    - Примеры плагинов: plugin-examples.md
   - Разработка:
     - API сервер: api.md
     - Архитектура: architecture.md
