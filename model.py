@@ -2,6 +2,7 @@ import os
 import torch
 from typing import Optional, Generator
 from threading import Thread
+from pathlib import Path
 
 
 from utils import generate_model_name
@@ -50,6 +51,10 @@ class OpenSawLM:
         self._gguf_path = None
         self.tag = generate_model_name()
         self._cache_dir = None
+        self._server = None
+
+    def use_server_backend(self, server) -> None:
+        self._server = server
 
     def resolve_alias(self, alias: str) -> str:
         if alias in AVAILABLE_MODELS:
@@ -168,6 +173,8 @@ class OpenSawLM:
         user_input: str,
         max_new_tokens: Optional[int] = None,
     ) -> str:
+        if self._server is not None:
+            return self._server.chat(system_prompt, user_input, max_new_tokens)
         if self._llama is not None:
             return self._chat_gguf(system_prompt, user_input, max_new_tokens)
         return self._chat_transformers(system_prompt, user_input, max_new_tokens)
@@ -212,6 +219,9 @@ class OpenSawLM:
         user_input: str,
         max_new_tokens: Optional[int] = None,
     ) -> Generator[str, None, str]:
+        if self._server is not None:
+            yield from self._server.chat_stream(system_prompt, user_input, max_new_tokens)
+            return
         if self._llama is not None:
             yield from self._chat_stream_gguf(system_prompt, user_input, max_new_tokens)
             return

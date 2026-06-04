@@ -61,6 +61,7 @@ from utils import (
     load_profile,
 )
 from model import OpenSawLM
+from llama_server import LlamaServer, build_server, _find_server
 
 from plugins import get_manager, load_plugins, HookPoint
 
@@ -410,14 +411,34 @@ def _run_chat(override_session: str = ''):
         max_new_tokens=config.max_tokens,
         temperature=config.temperature,
     )
-    try:
-        with console.status('[bold yellow]Loading language model...[/bold yellow]'):
-            lm.load(cache_dir=config.datasets_cache)
-    except Exception as e:
-        console.print(f'[red]Model load failed: {e}[/red]')
-        console.print('[yellow]Run [bold]opensaw setup[/bold] first, or check model name.[/yellow]')
-        Prompt.ask('[dim]Press Enter[/dim]', default='')
-        return
+
+    server = None
+    if lm.is_gguf():
+        server = LlamaServer(
+            model_path=config.model_name,
+            n_ctx=getattr(config, 'n_ctx', 4096),
+        )
+        if _find_server():
+            with console.status('[bold yellow]Starting llama.cpp server...[/bold yellow]'):
+                if server.start():
+                    lm.use_server_backend(server)
+                    console.print('[green]✓ llama.cpp server backend[/green]')
+        else:
+            console.print('[yellow]llama-server not found. Building...[/yellow]')
+            if build_server():
+                if server.start():
+                    lm.use_server_backend(server)
+                    console.print('[green]✓ llama.cpp server backend (built)[/green]')
+
+    if server is None or not server.ready:
+        try:
+            with console.status('[bold yellow]Loading language model...[/bold yellow]'):
+                lm.load(cache_dir=config.datasets_cache)
+        except Exception as e:
+            console.print(f'[red]Model load failed: {e}[/red]')
+            console.print('[yellow]Run [bold]opensaw setup[/bold] first, or check model name.[/yellow]')
+            Prompt.ask('[dim]Press Enter[/dim]', default='')
+            return
 
     # ============== Plugin system ==============
     pm = get_manager()
@@ -435,6 +456,11 @@ def _run_chat(override_session: str = ''):
     elif pm.plugins:
         for p in pm.plugins:
             console.print(f'[dim]Plugin: {p.name} {p.version}[/dim]')
+
+    # Ensure server stops on exit
+    import atexit
+    if server:
+        atexit.register(server.stop)
 
     # Allow plugins to replace the entire UI
     ui_replacement = pm.dispatch_capture(HookPoint.PRE_UI_LOOP, {

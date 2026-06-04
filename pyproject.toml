@@ -43,4 +43,5 @@ py-modules = [
     "cli", "config", "hardware_scanner", "memory_engine",
     "utils", "data_pipeline", "model", "tools", "tools_docs",
     "server", "plugins", "voice", "opensawcore",
+    "llama_server",
 ]
