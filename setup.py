@@ -1,0 +1,40 @@
+from setuptools import setup, find_packages
+
+setup(
+    name='opensaw',
+    version='1.1.0',
+    description='OpenSaw — Local AI Framework with neural memory, TUI chat, tools & server',
+    author='OpenCode',
+    py_modules=[
+        'cli', 'config', 'hardware_scanner', 'memory_engine',
+        'utils', 'data_pipeline', 'model', 'tools', 'tools_docs',
+        'server', 'plugins', 'voice',
+    ],
+    install_requires=[
+        'torch>=2.0.0',
+        'transformers>=4.36.0',
+        'accelerate>=0.25.0',
+        'huggingface_hub>=0.20.0',
+        'rich>=13.0.0',
+        'numpy>=1.24.0',
+        'click>=8.1.0',
+        'psutil>=5.9.0',
+    ],
+    extras_require={
+        'semantic': ['sentence-transformers>=2.2.0'],
+        'docs': ['pypdf>=3.0.0', 'python-docx>=1.0.0', 'openpyxl>=3.1.0'],
+        'server': ['fastapi>=0.100.0', 'uvicorn>=0.23.0', 'pydantic>=2.0.0'],
+        'voice': ['sounddevice>=0.4.0', 'openai-whisper>=20231117', 'pyttsx3>=2.90'],
+        'all': [
+            'sentence-transformers>=2.2.0',
+            'pypdf>=3.0.0', 'python-docx>=1.0.0', 'openpyxl>=3.1.0',
+            'fastapi>=0.100.0', 'uvicorn>=0.23.0', 'pydantic>=2.0.0',
+        ],
+    },
+    entry_points={
+        'console_scripts': [
+            'opensaw=cli:cli',
+        ],
+    },
+    python_requires='>=3.8',
+)

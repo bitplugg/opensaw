@@ -1,0 +1,38 @@
+NAME = "OpenSaw GTK UI"
+VERSION = "0.2"
+DESCRIPTION = "Полноценный GTK4 интерфейс с pywal-темизацией и анимациями"
+AUTHOR = "opensaw"
+
+from opensawcore import PluginBase, HookPoint
+
+GTK_AVAILABLE = False
+try:
+    import gi
+    gi.require_version('Gtk', '4.0')
+    gi.require_version('GLib', '2.0')
+    from opensaw_ui_gtk.app import OpenSawApp
+    GTK_AVAILABLE = True
+except (ImportError, ValueError):
+    pass
+
+
+class GtkUIPlugin(PluginBase):
+    name = NAME
+    version = VERSION
+    description = DESCRIPTION
+    author = AUTHOR
+
+    def on_load(self):
+        if not GTK_AVAILABLE:
+            return
+
+        @self.hook(HookPoint.PRE_UI_LOOP, priority=100)
+        def start_gtk(ctx):
+            lm = ctx.get('lm')
+            memory = ctx.get('memory')
+            sem_memory = ctx.get('sem_memory')
+            if lm is None:
+                return None
+            app = OpenSawApp(lm, memory, sem_memory)
+            app.run()
+            return True

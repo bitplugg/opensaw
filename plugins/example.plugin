@@ -1,0 +1,38 @@
+NAME = "Example"
+VERSION = "1.0"
+DESCRIPTION = "Пример плагина: добавляет /hello и перехватывает вывод"
+AUTHOR = "opensaw"
+
+from opensawcore import PluginBase, HookPoint
+
+
+class ExamplePlugin(PluginBase):
+    name = NAME
+    version = VERSION
+    description = DESCRIPTION
+    author = AUTHOR
+
+    commands = {}
+    tools = {}
+
+    def on_load(self):
+        self.commands['hello'] = self._cmd_hello
+        self.commands['reverse'] = self._cmd_reverse
+
+        @self.hook(HookPoint.POST_OUTPUT)
+        def on_output(ctx):
+            response = ctx.get('response', '')
+            self._last = response
+
+    def _cmd_hello(self, arg: str):
+        from opensawcore import config
+        from cli import chat_lines
+        name = arg or config.user_name
+        chat_lines.append(f'[bold cyan]👋 Привет, {name}![/bold cyan]')
+
+    def _cmd_reverse(self, arg: str):
+        from cli import chat_lines
+        if arg:
+            chat_lines.append(f'[dim]Перевёрнуто:[/dim] {arg[::-1]}')
+        else:
+            chat_lines.append('[dim]Usage: /reverse <text>[/dim]')

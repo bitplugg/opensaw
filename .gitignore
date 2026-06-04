@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.egg-info/
+venv/
+build_gguf.log
+build_gguf_nohup.log
+datasets_cache/
+models_local/
+workspace/
+profile.json
+build_history.json
+/tmp/llama.cpp/
