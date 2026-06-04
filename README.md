@@ -1,49 +1,93 @@
-# OpenSaw
 
-Локальный AI-ассистент с векторной памятью, инструментами, плагинами и сменным UI.
+╔═══════════════════════════════════════╗
+║              OpenSaw                  ║
+║    Локальный AI-ассистент             ║
+║    с душой и инструментами            ║
+╚═══════════════════════════════════════╝
 
 ```bash
 pip install -e .
 opensaw chat
 ```
 
+## Как это работает
+
+```
+  Ты ──→ [Ввод] ──→ Память (TF-IDF + Semantic)
+                        │
+                   Контекст
+                        │
+                        ↓
+                    Модель ──→ [CMD] [READ] [WRITE] [LS]
+                    (GGUF /      │
+                 Transformers)   ↓
+                        │    Файлы / Команды
+                        ↓
+                   Ответ ←─── Плагины (хуки)
+                        │
+                        ↓
+               ┌───────┴────────┐
+               │                │
+             TUI (Rich)    GTK4 / Telegram / Web
+                           (плагины)
+```
+
+| Компонент | Что делает |
+|-----------|-----------|
+| **model.py** | Загрузка transformers / GGUF, инференс |
+| **memory_engine.py** | Векторная память (TF-IDF + sentence-transformers) |
+| **plugins.py** | Система плагинов: хуки, команды, инструменты, AI-валидация |
+| **opensawcore.py** | SDK для плагинов |
+| **tools.py** | `[CMD]`, `[READ]`, `[WRITE]`, `[LS]` — файлы и команды |
+| **cli.py** | TUI на Rich, точка входа, цикл генерации |
+| **config.py** | Конфиг (модель, температура, имя) |
+| **hardware_scanner.py** | Определение CPU/GPU/RAM |
+| **server.py** | FastAPI для удалённого доступа |
+| **voice.py** | Голосовой ввод/вывод |
+
+## Авторы
+
+**OpenSaw Team**
+
+- [bitplugg](https://github.com/bitplugg) — создатель, архитектура, код
+
+*В разработке участвуют плагины сообщества. Стать автором — пиши `.plugin` файлы.*
+
+---
+
 ## Возможности
 
 - **Модели**: transformers (CPU/GPU) + GGUF/llama.cpp для медленных CPU
-- **Память**: TF-IDF + семантическая (sentence-transformers), режимы `tfidf`, `semantic`, `hybrid`
-- **Инструменты**: AI сам читает/пишет файлы, выполняет команды — `[CMD ls]`, `[READ file]`, `[WRITE path content]`
-- **Плагины**: `.plugin` файлы, хуки на любом этапе, замена UI, AI-валидация безопасности
-- **UI**: встроенный TUI (Rich), GTK4 плагин, можно сделать Telegram/Web/Audio плагином
-- **Сервер**: FastAPI эндпоинт для удалённого доступа
+- **Память**: TF-IDF + семантическая, режимы `tfidf`, `semantic`, `hybrid`
+- **Инструменты**: AI сам читает/пишет файлы, выполняет команды
+- **Плагины**: `.plugin` файлы, 10 точек хуков, замена UI, AI-валидация
+- **UI**: TUI (Rich) встроен, GTK4 плагином, можно Telegram/Web/Audio
+- **Сервер**: FastAPI, документация на `/docs`
 
 ## Быстрый старт
 
 ```bash
-# Установка
 git clone git@github.com:bitplugg/opensaw.git
 cd opensaw
 python3 -m venv venv
 source venv/bin/activate
 pip install -e .
-pip install -e ".[gguf]"  # если нужен GGUF backend
+pip install -e ".[gguf]"       # если нужен GGUF backend
 
-# Настройка
 opensaw setup
-
-# Запуск
 opensaw chat
 ```
 
-На слабых CPU (Celeron N5095, без AVX):
+На слабых CPU (Celeron N5095, без AVX2):
 
 ```bash
-./setup-gguf.sh     # собирает llama-cpp-python + GGUF модель
+./setup-gguf.sh
 ./venv/bin/opensaw chat
 ```
 
 ## Плагины
 
-Плагины — `.plugin` файлы в `./plugins/` или `~/.config/opensaw/plugins/`.
+`.plugin` файлы в `./plugins/` или `~/.config/opensaw/plugins/`.
 
 ```python
 NAME = "MyPlugin"
@@ -55,8 +99,8 @@ from opensawcore import PluginBase, HookPoint
 
 class MyPlugin(PluginBase):
     def on_load(self):
-        self.commands['hello'] = self._hello         # /hello
-        self.tools['CALC'] = self._calc               # [CALC 2+2]
+        self.commands['hello'] = self._hello
+        self.tools['CALC'] = self._calc
 
         @self.hook(HookPoint.POST_OUTPUT)
         def on_output(ctx):
@@ -70,28 +114,22 @@ class MyPlugin(PluginBase):
 ```bash
 pip install PyGObject
 # Положить plugins/opensaw-ui-gtk.plugin в ~/.config/opensaw/plugins/
-opensaw chat   # ← откроется GTK4 окно
+opensaw chat   # ← GTK4 окно
 ```
 
-Цвета подхватываются из pywal (`~/.cache/wal/colors.json`).
+Цвета из pywal (`~/.cache/wal/colors.json`).
 
-## Проект
+## Wiki
 
-```
-cli.py              — TUI чат + точка входа
-model.py            — загрузка моделей (transformers / GGUF)
-memory_engine.py    — векторная память
-plugins.py          — система плагинов (хуки, менеджер, AI-валидация)
-opensawcore.py      — SDK для плагинов
-config.py           — конфиг
-tools.py            — файловые операции
-hardware_scanner.py — определение железа
-server.py           — FastAPI сервер
-voice.py            — голосовой ввод/вывод
-setup-gguf.sh       — сборка GGUF бекенда под Celeron
-build_gguf.sh       — фоновый скрипт сборки llama-cpp-python
-```
+Вики проекта: [github.com/bitplugg/opensaw/wiki](https://github.com/bitplugg/opensaw/wiki)
+
+Темы:
+- [Установка и настройка](https://github.com/bitplugg/opensaw/wiki/Setup)
+- [Система плагинов](https://github.com/bitplugg/opensaw/wiki/Plugins)
+- [GGUF на слабых CPU](https://github.com/bitplugg/opensaw/wiki/GGUF)
+- [Написание своего плагина](https://github.com/bitplugg/opensaw/wiki/Writing-Plugins)
+- [API и сервер](https://github.com/bitplugg/opensaw/wiki/API)
 
 ## Лицензия
 
-MIT
+MIT &copy; 2026 OpenSaw Team
