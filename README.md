@@ -390,6 +390,7 @@ opensaw/
 
 ## Документация
 
+- [GitHub Pages](https://bitplugg.github.io/opensaw/) — сайт документации (MkDocs Material)
 - [Wiki](https://github.com/bitplugg/opensaw/wiki) — полная документация
 - [Setup](https://github.com/bitplugg/opensaw/wiki/Setup) — установка и настройка
 - [CLI Reference](https://github.com/bitplugg/opensaw/wiki/CLI-Reference) — все команды
