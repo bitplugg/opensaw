@@ -9,4 +9,5 @@ models_local/
 workspace/
 profile.json
 build_history.json
+site/
 /tmp/llama.cpp/
