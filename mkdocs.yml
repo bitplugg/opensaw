@@ -1,0 +1,64 @@
+site_name: OpenSaw
+site_description: Локальный AI-ассистент с душой и инструментами
+site_url: https://bitplugg.github.io/opensaw
+repo_url: https://github.com/bitplugg/opensaw
+repo_name: bitplugg/opensaw
+
+theme:
+  name: material
+  language: ru
+  palette:
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Светлая тема
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Тёмная тема
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.expand
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji
+  - pymdownx.details
+  - admonition
+  - toc:
+      permalink: true
+
+nav:
+  - Главная: index.md
+  - Установка:
+    - Быстрый старт: setup.md
+    - GGUF на слабых CPU: gguf.md
+    - Выбор модели: model-guide.md
+  - Использование:
+    - CLI Reference: cli-reference.md
+    - Система памяти: memory-system.md
+    - Инструменты AI: tools-reference.md
+  - Плагины:
+    - Система плагинов: plugins.md
+    - OpenSawCore SDK: opensawcore.md
+    - Написание плагина: writing-plugins.md
+    - Примеры: plugin-examples.md
+  - Разработка:
+    - API сервер: api.md
+    - Архитектура: architecture.md
+  - Справка:
+    - Troubleshooting: troubleshooting.md
+    - FAQ: faq.md
