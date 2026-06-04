@@ -8,6 +8,8 @@ echo "Installing build deps..." >> "$LOG"
 ./venv/bin/pip install scikit-build-core setuptools wheel pyproject-metadata flit_core 'meson-python>=0.13' ninja cmake 2>&1 | tee -a "$LOG"
 
 echo "Building llama-cpp-python..." >> "$LOG"
+CFLAGS="-mno-avx -mno-avx2 -mno-fma" \
+CXXFLAGS="-mno-avx -mno-avx2 -mno-fma" \
 CMAKE_ARGS="-DGGML_NATIVE=OFF -DGGML_CPU=ON -DGGML_AVX=OFF -DGGML_AVX2=OFF -DGGML_FMA=OFF -DGGML_SSE3=ON" \
   ./venv/bin/pip install \
   --no-binary :all: \
