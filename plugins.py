@@ -2,6 +2,7 @@ import importlib.machinery
 import importlib.util
 import inspect
 import os
+import sys
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from pathlib import Path
@@ -142,6 +143,10 @@ class PluginManager:
             plugins_dir = Path(d)
             if not plugins_dir.is_dir():
                 continue
+            # add to sys.path so subdirs (e.g. opensaw_ui_gtk) are importable
+            abs_plugins = str(plugins_dir.resolve())
+            if abs_plugins not in sys.path:
+                sys.path.insert(0, abs_plugins)
             for pf in sorted(plugins_dir.glob('*.plugin')):
                 info = _load_plugin_file(pf)
                 if info is not None:
